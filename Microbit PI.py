@@ -1,38 +1,51 @@
-def on_received_number(receivedNumber):
-	# When ID is received from the ID Microbit, send ID to Pi
-    basic.show_string("" + str((receivedNumber)))
-    serial.write_number(receivedNumber)
-radio.on_received_number(on_received_number)
+def on_received_string(receivedString):
 
-def on_data_received():
-
-	# When data is received from the pi, check for further action
-    logo_code = serial.read_string()
-	
-	# if data received is 0, means pi is connected successfully
-    if logo_code == "0\r":
-	
-		# Play sound and display tick to inform user of successful connection
+    # If string returned is "error", signifies that system was unable to get help
+    if receivedString == "error":
+        basic.show_icon(IconNames.SAD)
+        music.play_melody("E C E C C - - - ", 140)
+        
+    # Else, display success
+    else:
+        # Notify user of success with audio and visual
         basic.show_icon(IconNames.YES)
         music.play_melody("F A C5 A C5 - - - ", 140)
-        basic.show_leds("""
-        . . . . .
-        . . . . .
-        . . . . .
-        . . . . .
-        . . . . .
-        """)
-		
-	# else, send data to ID Microbit
-    else:
-        basic.show_leds("""
-            . . # . .
-            # # # # #
-            . . # . .
-            . . # . .
-            . . # . .
-        """)
-		radio.send_string(logo_code)
-serial.on_data_received(serial.delimiters(Delimiters.CARRIAGE_RETURN), on_data_received)
+        basic.pause(1000)
+        
+        # Display ICON to match with volunteer
+        if receivedString == "HEART" : basic.show_icon(IconNames.Heart)
+        elif receivedString == "DUCK" : basic.show_icon(IconNames.Duck)
+        elif receivedString == "HOUSE" : basic.show_icon(IconNames.House)
+        elif receivedString == "GHOST" : basic.show_icon(IconNames.Ghost)
+        elif receivedString == "UMBRELLA" : basic.show_icon(IconNames.Umbrella)
+        elif receivedString == "RABBIT" : basic.show_icon(IconNames.Rabbit)
+        elif receivedString == "SNAKE" : basic.show_icon(IconNames.Snake)
+        elif receivedString == "TARGET" : basic.show_icon(IconNames.Target)
+        elif receivedString == "PITCHFORK" : basic.show_icon(IconNames.Pitchfork)
+        elif receivedString == "SCISSORS" : basic.show_icon(IconNames.Scissors)
+        
+radio.on_received_string(on_received_string)
 
 radio.set_group(222)
+music.set_volume(175)
+
+def on_forever():
+    
+    # Implement a press-and-hold for both buttons
+    if input.button_is_pressed(Button.AB):
+        basic.pause(2000)
+        
+        #Second check, if AB still pressed, then send signal to Pi Microbit
+        if input.button_is_pressed(Button.AB):
+            radio.send_number(5)
+            
+            #Play sound and show LED to signify that SOS has been sent
+            basic.show_leds("""
+                . . # . .
+                . . # . .
+                . . # . .
+                . . # . .
+                . . # . .
+            """)
+            music.play_melody("F A C5 - - - - - ", 130)
+basic.forever(on_forever)
