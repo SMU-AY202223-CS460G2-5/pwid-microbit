@@ -13,7 +13,17 @@ def on_received_string(receivedString):
         basic.pause(1000)
         
         # Display ICON to match with volunteer
-        basic.show_icon(IconNames.HEART)
+        if receivedString == "HEART" : basic.show_icon(IconNames.Heart)
+        elif receivedString == "DUCK" : basic.show_icon(IconNames.Duck)
+        elif receivedString == "HOUSE" : basic.show_icon(IconNames.House)
+        elif receivedString == "GHOST" : basic.show_icon(IconNames.Ghost)
+        elif receivedString == "UMBRELLA" : basic.show_icon(IconNames.Umbrella)
+        elif receivedString == "RABBIT" : basic.show_icon(IconNames.Rabbit)
+        elif receivedString == "SNAKE" : basic.show_icon(IconNames.Snake)
+        elif receivedString == "TARGET" : basic.show_icon(IconNames.Target)
+        elif receivedString == "PITCHFORK" : basic.show_icon(IconNames.Pitchfork)
+        elif receivedString == "SCISSORS" : basic.show_icon(IconNames.Scissors)
+        
 radio.on_received_string(on_received_string)
 
 radio.set_group(222)
