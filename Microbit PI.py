@@ -7,10 +7,10 @@ radio.on_received_number(on_received_number)
 def on_data_received():
 
 	# When data is received from the pi, check for further action
-    logo_code = serial.read_string()
+    logo_code = serial.read_string().replace("\r","")
 	
 	# if data received is 0, means pi is connected successfully
-    if logo_code == "0\r":
+    if logo_code == "0":
 	
 		# Play sound and display tick to inform user of successful connection
         basic.show_icon(IconNames.YES)
