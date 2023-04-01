@@ -13,7 +13,7 @@ import pprint
 import time
 import datetime
 import time
-
+import requests
 
 # Configure logging
 logging.basicConfig(
@@ -22,6 +22,8 @@ logging.basicConfig(
    level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+# define URL
+url = 'https://pwid-helper-backend-lg7dh2p2uq-as.a.run.app/rasp'
 
 def loop(serial_port: str) -> None:
    # loop forever
@@ -29,8 +31,8 @@ def loop(serial_port: str) -> None:
         # try to open the serial port
         try:
            with serial.Serial(serial_port, 115200, timeout=1) as ser:
-               print("Press Ctrl-C to stop")
-               print("--------------------")
+               #print("Press Ctrl-C to stop")
+               #print("--------------------")
                ser.write(b"0\r")
 
 
@@ -44,7 +46,11 @@ def loop(serial_port: str) -> None:
                        # if the read was successful, do something with it
                        if line == "5":
                            print(f"{line}")
-                           ser.write(b"t\r")
+                           request_message = {'id':line, 'long':103.8494183, 'lat':1.2975488}
+                           response = requests.post(url, json = request_message)
+                           response_message = response.text + "\r"
+                           print(response_message.encode('utf-8'))
+                           ser.write(response_message.encode('utf-8'))
 
                except KeyboardInterrupt:
                    print()
@@ -70,7 +76,7 @@ def main() -> None:
    # args = parser.parse_args()
    # args_port = args.port
    args_port = "/dev/ttyACM0"
-   print(f"Using serial port: {args_port}")
+   #print(f"Using serial port: {args_port}")
 
 # check if serial port works, if not then wait for serial port to start
    loop(args_port)
@@ -78,6 +84,5 @@ def main() -> None:
 
 
 
-if __name__ == "__main__":
+if name == "__main__":
    main()
- 
